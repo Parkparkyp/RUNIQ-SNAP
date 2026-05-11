@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Instagram, Send, Menu, X, ArrowRight, User, LogOut, Trash2, Plus } from 'lucide-react';
 import { SITE_CONFIG, GALLERY_DATA, PRICING_DATA, INITIAL_CATEGORIES } from './constants';
 
