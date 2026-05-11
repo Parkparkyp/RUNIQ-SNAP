@@ -1,16 +1,13 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
-import App from './App.tsx';
+import App from './App';
 import './index.css';
 
-console.log("Initializing App...");
 const rootElement = document.getElementById('root');
-if (!rootElement) {
-  console.error("Root element not found!");
-} else {
+if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
       <App />
-    </StrictMode>,
+    </StrictMode>
   );
 }
