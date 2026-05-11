@@ -51,17 +51,21 @@ export default function App() {
 
   // Load all data from localStorage
   useEffect(() => {
-    const savedRes = localStorage.getItem('lunic_reservations');
-    if (savedRes) setReservations(JSON.parse(savedRes));
+    try {
+      const savedRes = localStorage.getItem('lunic_reservations');
+      if (savedRes) setReservations(JSON.parse(savedRes));
 
-    const savedGallery = localStorage.getItem('runiq_gallery');
-    if (savedGallery) setGalleryItems(JSON.parse(savedGallery));
+      const savedGallery = localStorage.getItem('runiq_gallery');
+      if (savedGallery) setGalleryItems(JSON.parse(savedGallery));
 
-    const savedPricing = localStorage.getItem('runiq_pricing');
-    if (savedPricing) setPricingItems(JSON.parse(savedPricing));
+      const savedPricing = localStorage.getItem('runiq_pricing');
+      if (savedPricing) setPricingItems(JSON.parse(savedPricing));
 
-    const savedCategories = localStorage.getItem('runiq_categories');
-    if (savedCategories) setCategories(JSON.parse(savedCategories));
+      const savedCategories = localStorage.getItem('runiq_categories');
+      if (savedCategories) setCategories(JSON.parse(savedCategories));
+    } catch (error) {
+      console.error("Failed to load data from localStorage:", error);
+    }
   }, []);
 
   // Persistence effects
