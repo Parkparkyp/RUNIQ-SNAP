@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Instagram, Send, Menu, X, ArrowRight, User, LogOut, Trash2, Plus } from 'lucide-react';
 import { SITE_CONFIG, GALLERY_DATA, PRICING_DATA, INITIAL_CATEGORIES } from './constants';
 
@@ -34,7 +34,46 @@ const SectionTitle = ({ title, sub }: { title: string; sub?: string }) => (
   </div>
 );
 
+// --- Error Boundary ---
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center p-8 text-center bg-gray-50">
+          <div>
+            <h1 className="text-2xl font-bold mb-4">문제가 발생했습니다.</h1>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">사이트를 로드하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>
+            <pre className="text-xs bg-red-50 text-red-700 p-4 rounded overflow-auto max-w-full">
+              {this.state.error?.toString()}
+            </pre>
+            <button onClick={() => window.location.reload()} className="mt-8 btn-minimal">페이지 새로고침</button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [password, setPassword] = useState('');
