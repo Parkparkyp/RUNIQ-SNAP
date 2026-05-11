@@ -68,17 +68,29 @@ export default function App() {
     }
   }, []);
 
-  // Persistence effects
+  // Persistence effects with safety
   useEffect(() => {
-    localStorage.setItem('runiq_gallery', JSON.stringify(galleryItems));
+    try {
+      localStorage.setItem('runiq_gallery', JSON.stringify(galleryItems));
+    } catch (e) {
+      console.warn("localStorage setItem failed:", e);
+    }
   }, [galleryItems]);
 
   useEffect(() => {
-    localStorage.setItem('runiq_pricing', JSON.stringify(pricingItems));
+    try {
+      localStorage.setItem('runiq_pricing', JSON.stringify(pricingItems));
+    } catch (e) {
+      console.warn("localStorage setItem failed:", e);
+    }
   }, [pricingItems]);
 
   useEffect(() => {
-    localStorage.setItem('runiq_categories', JSON.stringify(categories));
+    try {
+      localStorage.setItem('runiq_categories', JSON.stringify(categories));
+    } catch (e) {
+      console.warn("localStorage setItem failed:", e);
+    }
   }, [categories]);
 
   const handleReservationSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -93,9 +105,15 @@ export default function App() {
       timestamp: new Date().toLocaleString('ko-KR')
     };
 
-    const updated = [newRes, ...reservations];
-    setReservations(updated);
-    localStorage.setItem('lunic_reservations', JSON.stringify(updated));
+    setReservations(prev => {
+      const updated = [newRes, ...prev];
+      try {
+        localStorage.setItem('lunic_reservations', JSON.stringify(updated));
+      } catch (e) {
+        console.warn("localStorage failed:", e);
+      }
+      return updated;
+    });
 
     const message = `[RUNIQ 예약 문의]\n이름: ${newRes.name}\n연락처: ${newRes.contact}\n날짜: ${newRes.date}\n메시지: ${newRes.message}`;
     const kakaoUrl = `${SITE_CONFIG.CONTACT_KAKAO}?text=${encodeURIComponent(message)}`;
