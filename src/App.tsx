@@ -44,6 +44,9 @@ export default function App() {
   const [pricingItems, setPricingItems] = useState(PRICING_DATA);
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   
+  const [kakaoLink, setKakaoLink] = useState(SITE_CONFIG.CONTACT_KAKAO);
+  const [instagramLink, setInstagramLink] = useState(SITE_CONFIG.INSTAGRAM);
+
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [newPhoto, setNewPhoto] = useState({ src: '', title: '', type: INITIAL_CATEGORIES[0] });
   const [newPrice, setNewPrice] = useState({ period: '', price: '', detail: '' });
@@ -63,6 +66,12 @@ export default function App() {
 
       const savedCategories = localStorage.getItem('runiq_categories');
       if (savedCategories) setCategories(JSON.parse(savedCategories));
+
+      const savedKakao = localStorage.getItem('runiq_kakao');
+      if (savedKakao) setKakaoLink(savedKakao);
+
+      const savedInsta = localStorage.getItem('runiq_insta');
+      if (savedInsta) setInstagramLink(savedInsta);
     } catch (error) {
       console.error("Failed to load data from localStorage:", error);
     }
@@ -93,6 +102,22 @@ export default function App() {
     }
   }, [categories]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('runiq_kakao', kakaoLink);
+    } catch (e) {
+      console.warn("localStorage setItem failed:", e);
+    }
+  }, [kakaoLink]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('runiq_insta', instagramLink);
+    } catch (e) {
+      console.warn("localStorage setItem failed:", e);
+    }
+  }, [instagramLink]);
+
   const handleReservationSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -116,7 +141,7 @@ export default function App() {
     });
 
     const message = `[RUNIQ 예약 문의]\n이름: ${newRes.name}\n연락처: ${newRes.contact}\n날짜: ${newRes.date}\n메시지: ${newRes.message}`;
-    const kakaoUrl = `${SITE_CONFIG.CONTACT_KAKAO}?text=${encodeURIComponent(message)}`;
+    const kakaoUrl = `${kakaoLink}?text=${encodeURIComponent(message)}`;
     
     alert('문의 내용이 저장되었습니다. 카카오톡으로 연결합니다.');
     window.open(kakaoUrl, '_blank');
@@ -220,6 +245,35 @@ export default function App() {
                   <span>관리 도구 종료</span>
                 </button>
               </div>
+
+              {/* Site Settings */}
+              <section className="bg-gray-50 p-8 border-t border-tiffany">
+                <h3 className="text-lg font-medium mb-8 flex items-center space-x-2">
+                  <div className="w-1 h-6 bg-tiffany"></div>
+                  <span>사이트 외부 링크 관리</span>
+                </h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-2">
+                    <label className="text-[10px] tracking-widest text-gray-500 uppercase">인스타그램 URL</label>
+                    <input 
+                      type="text" 
+                      className="w-full p-3 text-sm border-b border-gray-300 bg-transparent outline-none focus:border-tiffany" 
+                      value={instagramLink} 
+                      onChange={e => setInstagramLink(e.target.value)} 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] tracking-widest text-gray-500 uppercase">카카오톡 채널 URL (또는 단축 오픈채팅 링크)</label>
+                    <input 
+                      type="text" 
+                      className="w-full p-3 text-sm border-b border-gray-300 bg-transparent outline-none focus:border-tiffany" 
+                      value={kakaoLink} 
+                      onChange={e => setKakaoLink(e.target.value)} 
+                    />
+                    <p className="text-[10px] text-gray-400">예시: http://pf.kakao.com/_xxxx 또는 https://open.kakao.com/o/xxxx</p>
+                  </div>
+                </div>
+              </section>
 
               {/* Category Management */}
               <section>
@@ -478,8 +532,8 @@ export default function App() {
                 <div className="w-1 h-20 bg-tiffany mx-auto mb-12"></div>
                 <h3 className="text-4xl font-light mb-12 tracking-tighter">OUR MOMENT.</h3>
                 <div className="flex flex-col md:flex-row justify-center items-center gap-12 text-[11px] tracking-[0.4em]">
-                  <a href={SITE_CONFIG.CONTACT_KAKAO} target="_blank" className="text-tiffany border-b border-tiffany pb-1 hover:text-black hover:border-black transition-all">KAKAO CHANNELS</a>
-                  <a href={SITE_CONFIG.INSTAGRAM} target="_blank" className="text-tiffany border-b border-tiffany pb-1 hover:text-black hover:border-black transition-all">INSTAGRAM @RUNIQ_SNAP</a>
+                  <a href={kakaoLink} target="_blank" className="text-tiffany border-b border-tiffany pb-1 hover:text-black hover:border-black transition-all">KAKAO CHANNELS</a>
+                  <a href={instagramLink} target="_blank" className="text-tiffany border-b border-tiffany pb-1 hover:text-black hover:border-black transition-all">INSTAGRAM @RUNIQ_SNAP</a>
                 </div>
               </section>
             </div>
